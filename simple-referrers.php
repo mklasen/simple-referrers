@@ -14,8 +14,16 @@
 add_action( 'init', function () {
 	if ( ! is_admin() && ! current_user_can( 'manage_options' ) ) {
 		if ( isset( $_SERVER['HTTP_REFERER'] ) ) {
-			if ( strpos( $_SERVER['HTTP_REFERER'], get_site_url() ) === false ) {
+			$ignored_strings = apply_filters( 'simple_referrers_customize_ignored_strings', array( get_site_url() ) );
+			$index           = true;
 
+			foreach ( $ignored_strings as $string ) {
+				if ( strpos( $_SERVER['HTTP_REFERER'], $string ) !== false ) {
+					$index = false;
+				}
+			}
+
+			if ( $index === true ) {
 				global $wp;
 				$target = home_url( $wp->request );
 
@@ -46,6 +54,9 @@ add_action( 'admin_menu', function () {
 		function () {
 			echo '<div class="wrap">';
 			$referrers = ! empty( get_option( 'simple_referrers' ) ) ? get_option( 'simple_referrers' ) : array();
+
+			$referrers = apply_filters( 'simple_referrers_customize_output', $referrers );
+
 			echo '<table style="background: white;" cellpadding="10px">';
 			echo '<tr>';
 			echo '<th style="text-align: left;">';
