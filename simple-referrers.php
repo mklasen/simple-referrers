@@ -57,23 +57,36 @@ add_action( 'admin_menu', function () {
 
 			$referrers = apply_filters( 'simple_referrers_customize_output', $referrers );
 
-			echo '<table style="background: white;" cellpadding="10px">';
+			$unique_values = array();
+
+			echo '<table style="background: white; width:100%;" cellpadding="10px" border="1">';
 			echo '<tr>';
-			echo '<th style="text-align: left;">';
+			echo '<th style="text-align: left;" colspan="5">';
 			echo 'Simple Referrers';
 			echo '</th>';
 			echo '</tr>';
 			echo '<tr>';
+			echo '<td><strong>Date</strong></td>';
 			echo '<td><strong>Referrer</strong></td>';
 			echo '<td><strong>Target</strong></td>';
 			echo '<td><strong>Date & Time</strong></td>';
 			echo '<td><strong>Domain</strong></td>';
 			echo '</tr>';
 			if ( ! empty( $referrers ) ) {
-				foreach ( $referrers as $ref ) {
+				foreach ( array_reverse( $referrers ) as $ref ) {
+
+					if (in_array($ref['url'], $unique_values)) {
+						continue;
+					}
+
+					$unique_values[] = $ref['url'];
+
 					echo '<tr>';
 					echo '<td>';
-					echo '<a href="' . $ref['url'] . '">' . $ref['url'] . '</a>';
+					echo '<i>' . date_i18n( 'd-m', $ref['time'] ) . '</i>';
+					echo '</td>';
+					echo '<td>';
+					echo '<a href="' . $ref['url'] . '">' . (strlen($ref['url']) > 50 ? substr($ref['url'], 0, 50) . '...' : $ref['url']) . '</a>';
 					echo '</td>';
 					echo '<td>';
 					echo '<a href="' . $ref['target'] . '">' . $ref['target'] . '</a>';
