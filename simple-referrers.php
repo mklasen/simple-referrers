@@ -75,29 +75,37 @@ add_action( 'admin_menu', function () {
 			if ( ! empty( $referrers ) ) {
 				foreach ( array_reverse( $referrers ) as $ref ) {
 
-					if (in_array($ref['url'], $unique_values)) {
+					if ( in_array( $ref['url'], $unique_values ) ) {
 						continue;
 					}
 
 					$unique_values[] = $ref['url'];
 
-					echo '<tr>';
-					echo '<td>';
-					echo '<i>' . date_i18n( 'd-m', $ref['time'] ) . '</i>';
-					echo '</td>';
-					echo '<td>';
-					echo '<a href="' . $ref['url'] . '">' . (strlen($ref['url']) > 50 ? substr($ref['url'], 0, 50) . '...' : $ref['url']) . '</a>';
-					echo '</td>';
-					echo '<td>';
-					echo '<a href="' . $ref['target'] . '">' . $ref['target'] . '</a>';
-					echo '</td>';
-					echo '<td>';
-					echo date_i18n( get_option( 'date_format' ) . ' ' . get_option( 'time_format' ), $ref['time'] );
-					echo '</td>';
-					echo '<td>';
-					echo '<a href="' . $ref['domain_link'] . '">' . $ref['domain'] . '</a>';
-					echo '</td>';
-					echo '</tr>';
+					$ref['url']         = esc_url( $ref['url'] );
+					$ref['target']      = esc_url( $ref['target'] );
+					$ref['time']        = esc_attr( $ref['time'] );
+					$ref['domain_link'] = esc_url( $ref['domain_link'] );
+
+					if ( ! empty( $ref['url'] ) ) {
+						
+						echo '<tr>';
+						echo '<td>';
+						echo '<i>' . date_i18n( 'd-m', $ref['time'] ) . '</i>';
+						echo '</td>';
+						echo '<td>';
+						echo '<a href="' . $ref['url'] . '">' . ( strlen( $ref['url'] ) > 50 ? substr( $ref['url'], 0, 50 ) . '...' : $ref['url'] ) . '</a>';
+						echo '</td>';
+						echo '<td>';
+						echo '<a href="' . $ref['target'] . '">' . $ref['target'] . '</a>';
+						echo '</td>';
+						echo '<td>';
+						echo date_i18n( get_option( 'date_format' ) . ' ' . get_option( 'time_format' ), $ref['time'] );
+						echo '</td>';
+						echo '<td>';
+						echo '<a href="' . $ref['domain_link'] . '">' . $ref['domain'] . '</a>';
+						echo '</td>';
+						echo '</tr>';
+					}
 				}
 			} else {
 				echo '<tr>';
